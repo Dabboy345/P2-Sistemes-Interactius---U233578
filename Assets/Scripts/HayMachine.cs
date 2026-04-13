@@ -1,0 +1,50 @@
+using UnityEngine;
+
+public class HayMachine : MonoBehaviour
+{
+    public float movementSpeed;
+    public float horizontalBoundary = 22;
+    public GameObject hayBalePrefab;
+    public Transform haySpawnpoint;
+    public float shootInterval;
+    private float shootTimer;
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+    private void UpdateMovement()
+    {
+        float horizontalInput = Input.GetAxisRaw("Horizontal"); // 1
+        if (horizontalInput < 0 && transform.position.x > -horizontalBoundary) // 1
+        {
+        transform.Translate(transform.right * -movementSpeed * Time.deltaTime);
+        }
+        else if (horizontalInput > 0 && transform.position.x < horizontalBoundary) // 2
+        {
+        transform.Translate(transform.right * movementSpeed * Time.deltaTime);
+        }
+    }
+    private void UpdateShooting() {
+        shootTimer -= Time.deltaTime;
+        if (shootTimer <= 0 && Input.GetKey(KeyCode.Space)) {
+            shootTimer = shootInterval;
+            ShootHay();
+        }
+    }
+
+    private void ShootHay()
+    {
+        Instantiate(hayBalePrefab, haySpawnpoint .position,Quaternion.identity);
+        SoundManager.Instance.PlayShootClip();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Debug.Log(transform.position.x);
+        UpdateMovement();
+        UpdateShooting();
+    }
+}
